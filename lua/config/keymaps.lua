@@ -68,3 +68,5 @@ keymap.set("n", "<leader>go", ":DiffviewOpen<CR>")
 keymap.set("n", "<leader>gC", ":DiffviewClose<CR>")
 keymap.set("n", "<leader>gb", ":Gitsigns toggle_current_line_blame <CR>")
 keymap.set("n", "<leader>gB", ":Gitsigns blame_line<CR>")
+
+keymap.set({ "n", "i" }, "<C-s>", "<ESC>:up<CR>")
