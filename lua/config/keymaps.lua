@@ -64,9 +64,11 @@ keymap.set("n", "<Leader>O", "O<Esc>^Da", opts)
 keymap.set("n", "<C-m>", "<C-i>", opts)
 
 -- GitDiff
-keymap.set("n", "<leader>go", ":DiffviewOpen<CR>")
-keymap.set("n", "<leader>gC", ":DiffviewClose<CR>")
+keymap.set("n", "<leader>gd", ":DiffviewOpen<CR>")
+keymap.set("n", "<leader>gD", ":DiffviewClose<CR>")
 keymap.set("n", "<leader>gb", ":Gitsigns toggle_current_line_blame <CR>")
-keymap.set("n", "<leader>gB", ":Gitsigns blame_line<CR>")
 
 keymap.set({ "n", "i" }, "<C-s>", "<ESC>:up<CR>")
+
+keymap.set("n", "<leader>gn", ":Neogit kind=split<CR>")
+keymap.set("n", "<leader>gN", ":Neogit commit<CR>")
