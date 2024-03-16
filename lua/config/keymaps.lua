@@ -33,7 +33,7 @@ keymap.set("n", "dw", 'vb"_d')
 keymap.set("n", "<C-a>", "gg<S-v>G")
 
 -- Diagnostics
-keymap.set("n", "<C-j>", function()
+keymap.set("n", "<C-g>", function()
   vim.diagnostic.goto_next()
 end, opts)
 
