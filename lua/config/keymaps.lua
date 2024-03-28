@@ -72,3 +72,15 @@ keymap.set({ "n", "i" }, "<C-s>", "<ESC>:up<CR>")
 
 keymap.set("n", "<leader>gn", ":Neogit kind=split<CR>")
 keymap.set("n", "<leader>gN", ":Neogit commit<CR>")
+
+keymap.set("n", "<leader>cc", ":CopilotChat ")
+keymap.set("n", "<leader>ct", ":CopilotChatToggle<CR>")
+
+keymap.set("n", "U", "<C-r>")
+
+keymap.set("n", "<leader>Tt", ":ToggleTermToggleAll<CR>")
+
+vim.keymap.set("n", "<C-h>", "<Cmd>NvimTmuxNavigateLeft<CR>", { silent = true })
+vim.keymap.set("n", "<C-j>", "<Cmd>NvimTmuxNavigateDown<CR>", { silent = true })
+vim.keymap.set("n", "<C-k>", "<Cmd>NvimTmuxNavigateUp<CR>", { silent = true })
+vim.keymap.set("n", "<C-l>", "<Cmd>NvimTmuxNavigateRight<CR>", { silent = true })
