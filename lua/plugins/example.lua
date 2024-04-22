@@ -232,6 +232,7 @@ return {
     opts = function()
       return {
         --[[add your custom lualine config here]]
+        lualine_c = { "harpoon2" },
       }
     end,
   },

@@ -43,6 +43,9 @@ keymap.set("n", "<C-w><right>", "<C-w>>")
 keymap.set("n", "<C-w><up>", "<C-w>+")
 keymap.set("n", "<C-w><down>", "<C-w>-")
 
+keymap.set("n", "p", '"0p')
+keymap.set("n", "P", '"0P')
+
 -- New tab
 keymap.set("n", "te", ":tabedit")
 keymap.set("n", "<tab>", ":tabnext<Return>", opts)
@@ -63,11 +66,6 @@ keymap.set("n", "<Leader>O", "O<Esc>^Da", opts)
 -- Jumplist
 keymap.set("n", "<C-m>", "<C-i>", opts)
 
--- GitDiff
-keymap.set("n", "<leader>gd", ":DiffviewOpen<CR>")
-keymap.set("n", "<leader>gD", ":DiffviewClose<CR>")
-keymap.set("n", "<leader>gb", ":Gitsigns toggle_current_line_blame <CR>")
-
 keymap.set({ "n", "i" }, "<C-s>", "<ESC>:up<CR>")
 
 keymap.set("n", "<leader>gn", ":Neogit kind=split<CR>")
@@ -75,6 +73,10 @@ keymap.set("n", "<leader>gN", ":Neogit commit<CR>")
 
 keymap.set("n", "<leader>cc", ":CopilotChat ")
 keymap.set("n", "<leader>ct", ":CopilotChatToggle<CR>")
+
+keymap.set("n", "<leader>gd", ":DiffviewOpen<CR>")
+keymap.set("n", "<leader>gD", ":DiffviewClose<CR>")
+keymap.set("n", "<leader>gb", ":Gitsigns toggle_current_line_blame <CR>")
 
 keymap.set("n", "U", "<C-r>")
 
@@ -84,3 +86,8 @@ vim.keymap.set("n", "<C-h>", "<Cmd>NvimTmuxNavigateLeft<CR>", { silent = true })
 vim.keymap.set("n", "<C-j>", "<Cmd>NvimTmuxNavigateDown<CR>", { silent = true })
 vim.keymap.set("n", "<C-k>", "<Cmd>NvimTmuxNavigateUp<CR>", { silent = true })
 vim.keymap.set("n", "<C-l>", "<Cmd>NvimTmuxNavigateRight<CR>", { silent = true })
+
+keymap.set("v", "J", ":m '>+1<CR>gv=gv") -- move line up(v)
+keymap.set("v", "K", ":m '<-2<CR>gv=gv") -- move line down(v)
+
+keymap.set("n", "<leader>nh", ":nohl<CR>")
