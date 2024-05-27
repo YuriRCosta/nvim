@@ -31,6 +31,7 @@ keymap.set("n", "<C-w><up>", "<C-w>+")
 keymap.set("n", "<C-w><down>", "<C-w>-")
 
 -- dont save to clipboard when delete and change
+keymap.set("n", "D", '"_D')
 keymap.set("n", "d", '"_d')
 keymap.set("n", "c", '"_c')
 
@@ -88,14 +89,6 @@ keymap.set("n", "<leader>q", 'viw<ESC>a"<ESC>bi"<ESC>')
 
 -- create space between lines and insert
 keymap.set("i", "<C-o>", "<C-j>")
-
--- type only one quote when in insert mode
-keymap.set("i", "'", "'")
-keymap.set("i", '"', '"')
-
--- go left when double quotes are typed
-keymap.set("i", '""', '""<left>')
-keymap.set("i", "''", "''<left>")
 
 -- move left and right in insert mode
 keymap.set("i", "<C-h>", "<left>")
