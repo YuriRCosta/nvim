@@ -24,6 +24,12 @@ keymap.set("n", "<C-g>", function()
   vim.diagnostic.goto_next()
 end, opts)
 
+keymap.set("n", "<C-e>", function()
+  vim.diagnostic.goto_next({
+    severity = vim.diagnostic.severity.ERROR,
+  })
+end, opts)
+
 -- Resize window
 keymap.set("n", "<C-w><left>", "<C-w><")
 keymap.set("n", "<C-w><right>", "<C-w>>")
