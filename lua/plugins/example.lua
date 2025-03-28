@@ -77,35 +77,44 @@ return {
     },
   },
 
-  -- add pyright to lspconfig
-  {
-    "neovim/nvim-lspconfig",
-    ---@class PluginLspOpts
-    opts = {
-      ---@type lspconfig.options
-      servers = {
-        -- pyright will be automatically installed with mason and loaded with lspconfig
-        pyright = {},
-      },
-    },
-  },
-
-  -- add tsserver and setup with typescript.nvim instead of lspconfig
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      "jose-elias-alvarez/typescript.nvim",
-      init = function()
-        require("lazyvim.util").lsp.on_attach(function(_, buffer)
-          -- stylua: ignore
-          vim.keymap.set( "n", "<leader>co", "TypescriptOrganizeImports", { buffer = buffer, desc = "Organize Imports" })
-          vim.keymap.set("n", "<leader>cR", "TypescriptRenameFile", { desc = "Rename File", buffer = buffer })
-        end)
-      end,
+      "yioneko/nvim-vtsls", -- Plugin otimizado para TypeScript
     },
-    ---@class PluginLspOpts
     opts = {
       servers = {
+        vtsls = {
+          settings = {
+            vtsls = {
+              autoUseWorkspaceTsdk = true, -- Usa a versão do TypeScript do projeto
+              experimental = {
+                completion = {
+                  enableServerSideFuzzyMatch = true, -- Melhora a velocidade da autocompletação
+                },
+              },
+              tsserver = {
+                disableAutomaticTypeAcquisition = true, -- Evita sobrecarga de downloads automáticos de tipos
+                maxTsServerMemory = 4096, -- Aloca mais memória para TypeScript (útil para monorepos)
+              },
+            },
+          },
+          on_attach = function(client, bufnr)
+            client.server_capabilities.documentFormattingProvider = false -- Evita conflitos com Prettier
+
+            local keymap = vim.keymap.set
+            local opts = { noremap = true, silent = true, buffer = bufnr }
+
+            keymap("n", "<leader>co", "VtsExec organize_imports", opts)
+            keymap("n", "<leader>cR", "VtsExec rename_file", opts)
+            keymap("n", "<C-g>", vim.diagnostic.goto_next, opts)
+            keymap("n", "<C-e>", function()
+              vim.diagnostic.goto_next({
+                severity = vim.diagnostic.severity.ERROR,
+              })
+            end, opts)
+          end,
+        },
         gopls = {
           keys = {
             -- Workaround for the lack of a DAP strategy in neotest-go: https://github.com/nvim-neotest/neotest-go/issues/12
@@ -148,36 +157,154 @@ return {
             },
           },
         },
-      },
-      setup = {
-        gopls = function(_, opts)
-          -- workaround for gopls not supporting semanticTokensProvider
-          -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
-          require("lazyvim.util").lsp.on_attach(function(client, _)
-            if client.name == "gopls" then
-              if not client.server_capabilities.semanticTokensProvider then
-                local semantic = client.config.capabilities.textDocument.semanticTokens
-                client.server_capabilities.semanticTokensProvider = {
-                  full = true,
-                  legend = {
-                    tokenTypes = semantic.tokenTypes,
-                    tokenModifiers = semantic.tokenModifiers,
-                  },
-                  range = true,
-                }
-              end
-            end
-          end)
-          -- end workaround
-          return opts
-        end,
+        --
+        -- gopls = {
+        --   gofumpt = true,
+        --   codelenses = {
+        --     gc_details = false,
+        --     generate = true,
+        --     regenerate_cgo = true,
+        --     run_govulncheck = true,
+        --     test = true,
+        --     tidy = true,
+        --     upgrade_dependency = true,
+        --     vendor = true,
+        --   },
+        --   hints = {
+        --     assignVariableTypes = true,
+        --     compositeLiteralFields = true,
+        --     compositeLiteralTypes = true,
+        --     constantValues = true,
+        --     functionTypeParameters = true,
+        --     parameterNames = true,
+        --     rangeVariableTypes = true,
+        --   },
+        --   analyses = {
+        --     fieldalignment = true,
+        --     nilness = true,
+        --     unusedparams = true,
+        --     unusedwrite = true,
+        --     useany = true,
+        --   },
+        --   usePlaceholders = true,
+        --   completeUnimported = true,
+        --   staticcheck = true,
+        --   directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
+        --   semanticTokens = true,
+        -- },
       },
     },
   },
+  -- add tsserver and setup with typescript.nvim instead of lspconfig
+  -- {
+  --   "neovim/nvim-lspconfig",
+  --   dependencies = {
+  --     "jose-elias-alvarez/typescript.nvim",
+  --     init = function()
+  --       require("lazyvim.util").lsp.on_attach(function(_, buffer)
+  --         -- stylua: ignore
+  --         vim.keymap.set( "n", "<leader>co", "TypescriptOrganizeImports", { buffer = buffer, desc = "Organize Imports" })
+  --         vim.keymap.set("n", "<leader>cR", "TypescriptRenameFile", { desc = "Rename File", buffer = buffer })
+  --       end)
+  --     end,
+  --   },
+  --   ---@class PluginLspOpts
+  --   opts = {
+  --     servers = {
+  --       gopls = {
+  --         keys = {
+  --           -- Workaround for the lack of a DAP strategy in neotest-go: https://github.com/nvim-neotest/neotest-go/issues/12
+  --           { "<leader>td", "<cmd>lua require('dap-go').debug_test()<CR>", desc = "Debug Nearest (Go)" },
+  --         },
+  --         settings = {
+  --           gopls = {
+  --             gofumpt = true,
+  --             codelenses = {
+  --               gc_details = false,
+  --               generate = true,
+  --               regenerate_cgo = true,
+  --               run_govulncheck = true,
+  --               test = true,
+  --               tidy = true,
+  --               upgrade_dependency = true,
+  --               vendor = true,
+  --             },
+  --             hints = {
+  --               assignVariableTypes = true,
+  --               compositeLiteralFields = true,
+  --               compositeLiteralTypes = true,
+  --               constantValues = true,
+  --               functionTypeParameters = true,
+  --               parameterNames = true,
+  --               rangeVariableTypes = true,
+  --             },
+  --             analyses = {
+  --               fieldalignment = true,
+  --               nilness = true,
+  --               unusedparams = true,
+  --               unusedwrite = true,
+  --               useany = true,
+  --             },
+  --             usePlaceholders = true,
+  --             completeUnimported = true,
+  --             staticcheck = true,
+  --             directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
+  --             semanticTokens = true,
+  --           },
+  --         },
+  --       },
+  --       tsserver = {
+  --         on_attach = function(client, bufnr)
+  --           -- Desativa a formatação automática do tsserver, pois usamos o Prettier
+  --           client.server_capabilities.documentFormattingProvider = false
+  --
+  --           -- Configurações de atalhos para navegação entre diagnósticos
+  --           local keymap = vim.keymap.set
+  --           local opts = { noremap = true, silent = true, buffer = bufnr }
+  --
+  --           keymap("n", "<C-g>", vim.diagnostic.goto_next, opts)
+  --           keymap("n", "<C-e>", function()
+  --             vim.diagnostic.goto_next({
+  --               severity = vim.diagnostic.severity.ERROR,
+  --             })
+  --           end, opts)
+  --         end,
+  --       },
+  --     },
+  --     setup = {
+  --       gopls = function(_, opts)
+  --         -- workaround for gopls not supporting semanticTokensProvider
+  --         -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+  --         require("lazyvim.util").lsp.on_attach(function(client, _)
+  --           if client.name == "gopls" then
+  --             if not client.server_capabilities.semanticTokensProvider then
+  --               local semantic = client.config.capabilities.textDocument.semanticTokens
+  --               client.server_capabilities.semanticTokensProvider = {
+  --                 full = true,
+  --                 legend = {
+  --                   tokenTypes = semantic.tokenTypes,
+  --                   tokenModifiers = semantic.tokenModifiers,
+  --                 },
+  --                 range = true,
+  --               }
+  --             end
+  --           end
+  --         end)
+  --         -- end workaround
+  --         return opts
+  --       end,
+  --       eslint = function(_, opts)
+  --         opts.on_attach = function(client)
+  --           client.server_capabilities.diagnostics = false
+  --         end
+  --       end,
+  --     },
+  --   },
+  -- },
 
   -- for typescript, LazyVim also includes extra specs to properly setup lspconfig,
   -- treesitter, mason and typescript.nvim. So instead of the above, you can use:
-  { import = "lazyvim.plugins.extras.lang.typescript" },
+  -- { import = "lazyvim.plugins.extras.lang.typescript" },
 
   -- add more treesitter parsers
   {
@@ -222,6 +349,20 @@ return {
     event = "VeryLazy",
     opts = function(_, opts)
       table.insert(opts.sections.lualine_x, "😄")
+      local function get_timerly_status()
+        local state = require("timerly.state")
+        if state.progress == 0 then
+          return ""
+        end
+
+        local total = math.max(0, state.total_secs + 1) -- Add 1 to sync with timer display
+        local mins = math.floor(total / 60)
+        local secs = total % 60
+
+        return string.format("%s %02d:%02d", state.mode:gsub("^%l", string.upper), mins, secs)
+      end
+
+      table.insert(opts.sections.lualine_x, get_timerly_status)
     end,
   },
 
@@ -238,7 +379,7 @@ return {
   },
 
   -- use mini.starter instead of alpha
-  { import = "lazyvim.plugins.extras.ui.mini-starter" },
+  -- { import = "lazyvim.plugins.extras.ui.mini-starter" },
 
   -- add jsonls and schemastore packages, and setup treesitter for json, json5 and jsonc
   { import = "lazyvim.plugins.extras.lang.json" },

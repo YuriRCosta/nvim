@@ -19,18 +19,29 @@ return {
         desc = "Find Plugin File",
       },
       {
-        ";f",
+        "<leader><leader>",
         function()
           local builtin = require("telescope.builtin")
           builtin.find_files({
             no_ignore = false,
-            hidden = true,
+            hidden = false,
           })
         end,
         desc = "Lists files in your current working directory, respects .gitignore",
       },
       {
-        ";r",
+        "<leader>aa",
+        function()
+          local builtin = require("telescope.builtin")
+          builtin.find_files({
+            no_ignore = true,
+            hidden = true,
+          })
+        end,
+        desc = "Lists all files in your current working directory",
+      },
+      {
+        "sa",
         function()
           local builtin = require("telescope.builtin")
           builtin.live_grep({
@@ -48,14 +59,6 @@ return {
         desc = "Lists open buffers",
       },
       {
-        ";t",
-        function()
-          local builtin = require("telescope.builtin")
-          builtin.help_tags()
-        end,
-        desc = "Lists available help tags and opens a new window with the relevant help info on <cr>",
-      },
-      {
         ";;",
         function()
           local builtin = require("telescope.builtin")
@@ -64,50 +67,42 @@ return {
         desc = "Resume the previous telescope picker",
       },
       {
-        ";e",
-        function()
-          local builtin = require("telescope.builtin")
-          builtin.diagnostics()
-        end,
-        desc = "Lists Diagnostics for all open buffers or a specific buffer",
-      },
-      {
-        ";s",
+        "sf",
         function()
           local builtin = require("telescope.builtin")
           builtin.treesitter()
         end,
         desc = "Lists Function names, variables, from Treesitter",
       },
-      {
-        "sf",
-        function()
-          local telescope = require("telescope")
-
-          local function telescope_buffer_dir()
-            return vim.fn.expand("%:p:h")
-          end
-
-          telescope.extensions.file_browser.file_browser({
-            path = "%:p:h",
-            cwd = telescope_buffer_dir(),
-            respect_gitignore = false,
-            hidden = true,
-            grouped = true,
-            previewer = false,
-            initial_mode = "normal",
-            layout_config = { height = 40 },
-          })
-        end,
-        desc = "Open File Browser with the path of the current buffer",
-      },
+      -- {
+      --   "sf",
+      --   function()
+      --     local telescope = require("telescope")
+      --
+      --     local function telescope_buffer_dir()
+      --       return vim.fn.expand("%:p:h")
+      --     end
+      --
+      --     telescope.extensions.file_browser.file_browser({
+      --       path = "%:p:h",
+      --       cwd = telescope_buffer_dir(),
+      --       respect_gitignore = false,
+      --       hidden = true,
+      --       grouped = true,
+      --       previewer = false,
+      --       initial_mode = "normal",
+      --       layout_config = { height = 40 },
+      --     })
+      --   end,
+      -- desc = "Open File Browser with the path of the current buffer",
+      -- },
     },
     config = function(_, opts)
       local telescope = require("telescope")
       local actions = require("telescope.actions")
       local fb_actions = require("telescope").extensions.file_browser.actions
 
-      opts.defaults = vim.tbl_deep_extend("force", opts.defaults, {
+      opts.defaults = vim.tbl_deep_extend("force", opts.defaults or {}, {
         wrap_results = true,
         layout_strategy = "horizontal",
         layout_config = { prompt_position = "top" },
@@ -129,12 +124,9 @@ return {
       opts.extensions = {
         file_browser = {
           theme = "dropdown",
-          -- disables netrw and use telescope-file-browser in its place
           hijack_netrw = true,
           mappings = {
-            -- your custom insert mode mappings
             ["n"] = {
-              -- your custom normal mode mappings
               ["N"] = fb_actions.create,
               ["h"] = fb_actions.goto_parent_dir,
               ["/"] = function()
