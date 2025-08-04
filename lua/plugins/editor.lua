@@ -41,11 +41,13 @@ return {
         desc = "Lists all files in your current working directory",
       },
       {
-        "sa",
+        "<leader>af",
         function()
           local builtin = require("telescope.builtin")
           builtin.live_grep({
-            additional_args = { "--hidden" },
+            additional_args = function()
+              return { "--hidden" }
+            end,
           })
         end,
         desc = "Search for a string in your current working directory and get results live as you type, respects .gitignore",
