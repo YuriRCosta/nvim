@@ -23,5 +23,20 @@ set_hl(0, "FloatBorder", { bg = "none" })
 vim.api.nvim_create_autocmd("TermOpen", {
   callback = function()
     vim.wo.winbar = ""
+    vim.wo.statusline = ""
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    vim.cmd([[
+      hi StatusLine guibg=NONE ctermbg=NONE
+      hi StatusLineNC guibg=NONE ctermbg=NONE
+      hi LualineNormal ctermbg=NONE guibg=NONE
+      hi LualineInsert ctermbg=NONE guibg=NONE
+      hi LualineVisual ctermbg=NONE guibg=NONE
+      hi LualineReplace ctermbg=NONE guibg=NONE
+      hi LualineCommand ctermbg=NONE guibg=NONE
+    ]])
   end,
 })
